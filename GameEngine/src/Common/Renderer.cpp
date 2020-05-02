@@ -60,6 +60,7 @@ Texture Renderer::loadTexture(const std::string& texturePath, bool alpha)
 	unsigned char* textureData = stbi_load(src, &width, &height, &nrChannels, 0);
 	Texture texture(textureData, width, height);
 	stbi_image_free(textureData);
+	return texture;
 }
 
 std::shared_ptr<Shader> Renderer::getShader()
