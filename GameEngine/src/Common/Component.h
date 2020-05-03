@@ -2,12 +2,12 @@
 
 #include <memory>
 
-//#include "GameObject.h"
-class GameObject;
+#include "GameObject.h"
+#include "Component.h"
 
+class GameObject;
 class Component
 {
-
 private:
 	std::weak_ptr<GameObject> father;
 	

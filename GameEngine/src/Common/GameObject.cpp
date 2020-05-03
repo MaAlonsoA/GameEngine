@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include <iostream>
 
 GameObject::GameObject()
 {
@@ -29,9 +30,12 @@ void GameObject::setFather(std::weak_ptr<GameObject> father)
 
 void GameObject::update()
 {
-	for (auto& elem : components)
-		elem->update();
 
+	for (auto& elem : components) {
+		elem->update();
+	}
+		
+	
 	for (auto& elem : children)
 		elem->update();
 }

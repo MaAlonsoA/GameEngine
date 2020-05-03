@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Shader Renderer::loadShader(const std::string& vertexPath, const std::string& fragmentPath, std::shared_ptr<std::string> geometricPath)
+unsigned int Renderer::loadShader(const std::string& vertexPath, const std::string& fragmentPath)
 {
 	std::string vertexCode;
 	std::string fragmentCode;
@@ -24,25 +24,8 @@ Shader Renderer::loadShader(const std::string& vertexPath, const std::string& fr
 		vertexCode = vShaderSS.str();
 		fragmentCode = fShaderSS.str();
 
-		if (!geometricPath) {
-			std::string geometricCode;
-			std::ifstream gShaderFile(*geometricPath);
-
-			std::stringstream gShaderSS;
-			gShaderSS << gShaderFile.rdbuf();
-			gShaderFile.close();
-
-			geometricCode = gShaderSS.str();
-
-			//return shader with geometric
-			Shader shader(vertexCode, fragmentCode, std::make_shared<std::string>(geometricCode));
-			return shader;
-		}
-		else {
-			//return shader without geometric
-			Shader shader(vertexCode, fragmentCode, nullptr);
-			return shader;
-		}
+		Shader shader(vertexCode, fragmentCode);
+		return shader.getShader();
 
 	} catch (const std::string msg)
 	{
@@ -50,35 +33,71 @@ Shader Renderer::loadShader(const std::string& vertexPath, const std::string& fr
 	}
 };
 
-Texture Renderer::loadTexture(const std::string& texturePath, bool alpha)
+unsigned int Renderer::loadTexture(const std::string& texturePath, bool alpha)
 {
-	int width;
-	int height;
+	int width{512};
+	int height{512};
 	int nrChannels;
 	const char* src = texturePath.c_str();
 
 	unsigned char* textureData = stbi_load(src, &width, &height, &nrChannels, 0);
 	Texture texture(textureData, width, height);
 	stbi_image_free(textureData);
-	return texture;
+	return texture.getTexture();
 }
 
-std::shared_ptr<Shader> Renderer::getShader()
-{
-	return shader;
-}
 
-std::shared_ptr<Texture> Renderer::getTexture()
-{
-	return texture;
-}
 
 void Renderer::initRenderer()
 {
 
+	//Create VAO & VBO
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	//Bind VBO & VAO
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(	GL_ARRAY_BUFFER,
+					vertexSize * sizeof(vertices),
+					&vertices.front(),
+					GL_STATIC_DRAW
+				);
+	
+	//Enable & Attributes
+	glVertexAttribPointer(	0, 
+							vertexSize,
+							GL_FLOAT,
+							GL_FALSE,
+							vertexSize * sizeof(float),
+							(void*)0
+	);
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+ 	glBindVertexArray(0);
+
 }
 
 
+void Renderer::update()
+{
+	glUseProgram(shaderProgram);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, textureProgram);
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, vertexSize);
+	glBindVertexArray(0);
+}
+
+Renderer::Renderer(	const std::string& vertexPath, const std::string& fragmentPat, const std::vector<float>& vertices, unsigned short vertexSize,
+					const std::string& texturePath, bool alpha) :
+	vertices{ vertices },
+	vertexSize{ vertexSize },
+	shaderProgram{ loadShader(vertexPath, fragmentPat) },
+	textureProgram{ loadTexture(texturePath, alpha) }
+{
+	
+
+}
 
 
 

@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dependecies\includes\stb_image.h" />
     <ClInclude Include="src\Common\Component.h" />
     <ClInclude Include="Dependecies\includes\glad\glad.h" />
     <ClInclude Include="Dependecies\includes\GLFW\glfw3.h" />
@@ -95,11 +96,9 @@
     <ClInclude Include="src\Common\GameObject.h" />
     <ClInclude Include="src\Common\Shader.h" />
     <ClInclude Include="src\Common\Renderer.h" />
-    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Common\Game.h" />
     <ClInclude Include="src\Common\Texture.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Dependecies\libs\glfw3.lib" />
+    <ClInclude Include="src\Common\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\shader.fs" />
@@ -113,10 +112,14 @@
     <ClCompile Include="src\Common\GameObject.cpp" />
     <ClCompile Include="src\Common\Shader.cpp" />
     <ClCompile Include="src\Common\Renderer.cpp" />
-    <ClCompile Include="src\Game.cpp" />
+    <ClCompile Include="src\Common\Game.cpp" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\Source.cpp" />
+    <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Common\Texture.cpp" />
+    <ClCompile Include="src\Common\Transform.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Dependecies\libs\glfw3.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

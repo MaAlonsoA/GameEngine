@@ -5,6 +5,7 @@
 
 #include "Component.h"
 
+class Component;
 class GameObject : public std::enable_shared_from_this<GameObject> 
 {
 private:
