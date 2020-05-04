@@ -6,16 +6,16 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Common/Game.h"
 #include "Common/Scene.h"
 #include "Common/GameObject.h"
 #include "Common/Component.h"
 #include "Common/Renderer.h"
+#include "Game.h"
 
 
 
 
-GLFWwindow* initWindow(unsigned int SCR_WIDTH, unsigned int SCR_HEIGHT);
+GLFWwindow* initWindow(unsigned SCR_WIDTH, unsigned SCR_HEIGHT);
 void framebufferSizeCallback(GLFWwindow* window, int SCR_WIDTH, int SCR_HEIGHT);
 void loadAssets();
 void processImput(GLFWwindow* window);
@@ -23,10 +23,11 @@ void gameLoop(GLFWwindow* window);
 
 
 int main() {
-	const unsigned int width{ 800 };
-	const unsigned int height{ 600 };
+	const unsigned width{ 800 };
+	const unsigned height{ 800 };
 
 	GLFWwindow* window{ initWindow(width, height) };
+	
 	loadAssets();
 	gameLoop(window);
 	
@@ -35,7 +36,7 @@ int main() {
 
 
 
-GLFWwindow* initWindow(unsigned int SCR_WIDTH, unsigned int SCR_HEIGHT)
+GLFWwindow* initWindow(unsigned SCR_WIDTH, unsigned SCR_HEIGHT)
 {
 	GLFWwindow* window;
 	void framebufferSizeCallback(GLFWwindow * window, int width, int height);
@@ -48,6 +49,7 @@ GLFWwindow* initWindow(unsigned int SCR_WIDTH, unsigned int SCR_HEIGHT)
 	glfwWindowHint(GLFW_RESIZABLE, false); // false to non sesiazable window
 
 	window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Mejor casi que hago el Sudoku", NULL, NULL);
+	
 	if (!window) {
 		throw std::string{ "Failed to create GLFW window" };
 		glfwTerminate();
@@ -77,30 +79,37 @@ void processImput(GLFWwindow* window)
 
 void gameLoop(GLFWwindow* window)
 {
-	std::vector<float>vertices{ 
-	-0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f };
-	Game breakOut;
-	auto sandBox{ std::make_shared<Scene>() };
-	auto triangulo1{ std::make_shared<GameObject>() };
-	auto trianguloRender{ std::make_shared<Renderer>(	"resources/shaders/shader.vs", "resources/shaders/shader.fs", vertices, 3,
-														"resources/textures/charly.png", true) };
-	trianguloRender->initRenderer();
-	triangulo1->pushComponent(trianguloRender);
+	Game prueba;
+	std::vector <float> positions{
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+	};
+	std::vector <unsigned> indices{
+		0, 1, 3,
+		1, 2, 3
+	};
+	auto sandbox{ std::make_shared<Scene>() };
+	auto prueba1{ std::make_shared<GameObject>() };
+	auto render1{ std::make_shared<Renderer>(	"resources/shaders/shader2.vs", "resources/shaders/shader2.fs", positions, 5, indices,
+												"resources/textures/charly.png", true
+												) };
+	prueba1->pushComponent(render1);
+	sandbox->pushGameObject(prueba1);
 
-	sandBox->pushGameObject(triangulo1);
-
-	
 	while (!glfwWindowShouldClose(window)) {
 
 		processImput(window);
-
+		
 		//render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		
+		
+		sandbox->update();
 
-		sandBox->update();
+		
 
 		//glfw: swap buffer and poll IO event
 		glfwSwapBuffers(window);

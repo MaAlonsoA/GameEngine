@@ -1,19 +1,19 @@
 #pragma once
 
-#include <memory>
-#include <iostream>
-
 #include <glad/glad.h>
 
-class Texture 
+class Texture
 {
-private: 
-	unsigned int textureProgram;
-	unsigned int makeTexture(unsigned char* data, unsigned int width, unsigned int height);
+private:
+	unsigned ID;
+	unsigned makeTexture(unsigned char* data, unsigned width, unsigned height);
 
 public:
-	Texture(unsigned char* data, unsigned int width, unsigned int height);
-	unsigned int getTexture() const;
-
+	Texture(unsigned char* data, unsigned width, unsigned height);
+	~Texture();
+	unsigned getID();
+	void bind() const;
+	void unBind();
 };
+
 

@@ -9,7 +9,11 @@
 
 #include "Component.h"
 #include "Shader.h"
-#include "Texture.h"
+#include "texture.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+#include "VertexBufferLayout.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -18,29 +22,42 @@
 class Renderer : public Component
 {
 private:
-	unsigned int shaderProgram;
-	unsigned int textureProgram;
-	std::vector <float> vertices;
-	unsigned int VBO;
-	unsigned int VAO;
-	unsigned int vertexSize;
-
-public:
-	unsigned int loadShader(	const std::string& vertexPath, 
-								const std::string& fragmentPath
-							);
-	unsigned int loadTexture(const std::string& texturePath, bool alpha);
-	void initRenderer();
-	void update();
-	Renderer(	const std::string& vertexPath,
-				const std::string& fragmentPat,
-				const std::vector<float>& vertices,
-				unsigned short vertexSize,
-				const std::string& texturePath,
-				bool alpha
-			);
-
+	VertexArray VAO;
+	VertexBuffer VBO;
+	IndexBuffer IBO;
+	//Shader
+	std::shared_ptr<Shader> shader;
+	std::vector<float> vertices;
+	unsigned vertexSize;
+	std::vector<unsigned> indices;
+	std::shared_ptr<Shader> loadShader(const std::string& vertexPath, const std::string& fragmentPath);
+	//Texture
+	std::shared_ptr<Texture> texture;
+	std::shared_ptr<Texture> loadTexture(const std::string texturePath, bool alpha);
+	//Uniforms
+	bool enableUniforms;
+	std::vector<float> uniformData;
+	std::string uniformName;
 	
-
+public:
+	//Without texture Constructor
+	Renderer(	const std::string& vertexPath,
+				const std::string& fragmentPath,
+				const std::vector<float>& vertices,
+				unsigned vertexSize,
+				std::vector<unsigned> indices
+	);
+	//With texture Constructor
+	Renderer(const std::string& vertexPath,
+		const std::string& fragmentPath,
+		const std::vector<float>& vertices,
+		unsigned vertexSize,
+		std::vector<unsigned> indices,
+		const std::string& texturePath,
+		bool alpha
+	);
+	~Renderer();
+	void update() const;
+	void setUniform(bool enable, const std::vector<float>& data, const std::string& name);
 };
 

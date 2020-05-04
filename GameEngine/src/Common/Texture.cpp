@@ -1,30 +1,47 @@
-#include "Texture.h"
+#include "texture.h"
 
-unsigned int Texture::makeTexture(unsigned char* data, unsigned int width, unsigned int height)
+unsigned Texture::makeTexture(unsigned char* data, unsigned width, unsigned height)
 {
-	unsigned int textureID;
+	unsigned textureID;
 	glGenTextures(1, &textureID);
+	
 	glBindTexture(GL_TEXTURE_2D, textureID);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_REPEAT);
+	glTextureParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_REPEAT);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
-	
+
 	return textureID;
 }
 
-Texture::Texture(unsigned char* data, unsigned int width, unsigned int height) : 
-	textureProgram{ makeTexture(data, width, height) }
+Texture::Texture(unsigned char* data, unsigned width, unsigned height) :
+	ID {makeTexture(data, width, height)}
 {
-	
+
 }
 
-unsigned int Texture::getTexture() const
+Texture::~Texture()
 {
-	return textureProgram;
+	glDeleteTextures(1, &ID);
+}
+
+unsigned Texture::getID()
+{
+	return ID;
+}
+
+void Texture::bind() const
+{
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 1);
+}
+
+void Texture::unBind()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

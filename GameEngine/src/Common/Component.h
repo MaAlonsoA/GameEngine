@@ -13,6 +13,6 @@ private:
 	
 public:
 	void setFather(std::weak_ptr<GameObject> father);
-	virtual void update() = 0;
+	virtual void update()const = 0;
 };
 

@@ -3,101 +3,103 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-unsigned int Renderer::loadShader(const std::string& vertexPath, const std::string& fragmentPath)
+std::shared_ptr<Shader> Renderer::loadShader(const std::string& vertexPath, const std::string& fragmentPath)
 {
 	std::string vertexCode;
 	std::string fragmentCode;
-	
-	try
-	{
-		std::ifstream vShaderFile(vertexPath);
-		std::ifstream fShaderFile(fragmentPath);
 
-		std::stringstream vShaderSS;
-		vShaderSS << vShaderFile.rdbuf();
-		std::stringstream fShaderSS;
-		fShaderSS << fShaderFile.rdbuf();
+	std::ifstream vShaderFile(vertexPath);
+	std::ifstream fShaderFile(fragmentPath);
 
-		vShaderFile.close();
-		fShaderFile.close();
+	std::stringstream vShaderSS;
+	vShaderSS << vShaderFile.rdbuf();
+	std::stringstream fShaderSS;
+	fShaderSS << fShaderFile.rdbuf();
 
-		vertexCode = vShaderSS.str();
-		fragmentCode = fShaderSS.str();
+	vShaderFile.close();
+	fShaderFile.close();
 
-		Shader shader(vertexCode, fragmentCode);
-		return shader.getShader();
+	vertexCode = vShaderSS.str();
+	fragmentCode = fShaderSS.str();
 
-	} catch (const std::string msg)
-	{
-		std::cout << "ERROR:FAILED TO READ SHADER FILES\n";
-	}
-};
+	auto shader{ std::make_shared<Shader>(vertexCode,fragmentCode) };
+	return shader;
+}
 
-unsigned int Renderer::loadTexture(const std::string& texturePath, bool alpha)
+std::shared_ptr<Texture> Renderer::loadTexture(const std::string texturePath, bool alpha)
 {
-	int width{512};
-	int height{512};
-	int nrChannels;
-	const char* src = texturePath.c_str();
+	int width{ 512 };
+	int height{ 512 };
+	int nrChanel;
+	const char* src{ texturePath.c_str() };
+	
+	unsigned char* textureData{ stbi_load(src, &width, &height, &nrChanel, 0) };
 
-	unsigned char* textureData = stbi_load(src, &width, &height, &nrChannels, 0);
-	Texture texture(textureData, width, height);
+	auto texture{std::make_shared<Texture> (textureData, width, height) };
 	stbi_image_free(textureData);
-	return texture.getTexture();
+
+	return texture;
 }
 
 
-
-void Renderer::initRenderer()
-{
-
-	//Create VAO & VBO
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	//Bind VBO & VAO
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(	GL_ARRAY_BUFFER,
-					vertexSize * sizeof(vertices),
-					&vertices.front(),
-					GL_STATIC_DRAW
-				);
-	
-	//Enable & Attributes
-	glVertexAttribPointer(	0, 
-							vertexSize,
-							GL_FLOAT,
-							GL_FALSE,
-							vertexSize * sizeof(float),
-							(void*)0
-	);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
- 	glBindVertexArray(0);
-
-}
-
-
-void Renderer::update()
-{
-	glUseProgram(shaderProgram);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, textureProgram);
-	glBindVertexArray(VAO);
-	glDrawArrays(GL_TRIANGLES, 0, vertexSize);
-	glBindVertexArray(0);
-}
-
-Renderer::Renderer(	const std::string& vertexPath, const std::string& fragmentPat, const std::vector<float>& vertices, unsigned short vertexSize,
-					const std::string& texturePath, bool alpha) :
+Renderer::Renderer(const std::string& vertexPath, const std::string& fragmentPath, const std::vector<float>& vertices, unsigned vertexSize, std::vector<unsigned> indices) :
+	shader{ loadShader(vertexPath, fragmentPath) },
 	vertices{ vertices },
 	vertexSize{ vertexSize },
-	shaderProgram{ loadShader(vertexPath, fragmentPat) },
-	textureProgram{ loadTexture(texturePath, alpha) }
+	indices{ indices },
+	VBO(vertices, vertices.size() ),
+	IBO(indices, indices.size()),
+	enableUniforms {false}
 {
-	
+	VertexBufferLayout layout;
+	layout.push<float>(vertexSize);
+	VAO.addBuffer(VBO, layout);
+}
+
+Renderer::Renderer(const std::string& vertexPath, const std::string& fragmentPath, const std::vector<float>& vertices, unsigned vertexSize, std::vector<unsigned> indices, const std::string& texturePath, bool alpha) :
+	shader{ loadShader(vertexPath, fragmentPath) },
+	vertices{ vertices },
+	vertexSize{ vertexSize },
+	indices{ indices },
+	VBO(vertices, vertices.size()),
+	IBO(indices, indices.size()),
+	enableUniforms{ false },
+	texture {loadTexture(texturePath, alpha)}
+{
+	VertexBufferLayout layout;
+	layout.push<float>(vertexSize - 2.0f);
+	layout.push<float>(2);
+	VAO.addBuffer(VBO, layout);
+}
+
+Renderer::~Renderer()
+{
 
 }
 
+void Renderer::update() const
+{
+	if (enableUniforms) {
+		switch (uniformData.size())
+		{
+		case 1: shader->setUniform1f(uniformName,  uniformData.at(0) );
+		case 2: shader->setUniform4f(uniformName, { uniformData.at(0), uniformData.at(1) });
+		case 3: shader->setUniform4f(uniformName, { uniformData.at(0), uniformData.at(1), uniformData.at(2) });
+		case 4: shader->setUniform4f(uniformName, { uniformData.at(0), uniformData.at(1), uniformData.at(2), uniformData.at(3) });
+		}
+	}
+	
+	shader->setUniform1i("u_Texture", 0);
+	shader->use();
+	texture->bind();
+	VAO.bind();
+	IBO.bind();
+	glDrawElements(GL_TRIANGLES, IBO.getAmount(), GL_UNSIGNED_INT, nullptr);
+}
 
-
+void Renderer::setUniform(bool enable, const std::vector<float>& data, const std::string& name)
+{
+	enableUniforms = enable;
+	uniformData = data;
+	uniformName = name;
+}
