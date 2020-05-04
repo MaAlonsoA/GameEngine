@@ -1,60 +1,112 @@
-#include "Shader.h"
+﻿#include "Shader.h"
+
 #include <iostream>
 
-unsigned int Shader::makeShader(const std::string& vertexShader, const std::string& fragmentShader)
+unsigned Shader::makeShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
-	unsigned int shaderProgram{ glCreateProgram() };
-	unsigned int vs{ compileShader(GL_VERTEX_SHADER, vertexShader) };
-	unsigned int fs{ compileShader(GL_FRAGMENT_SHADER, fragmentShader) };
+	unsigned shaderProgram{ glCreateProgram() };
+	unsigned vs{ compileShader(vertexShader, GL_VERTEX_SHADER) };
+	unsigned fs{ compileShader(fragmentShader, GL_FRAGMENT_SHADER) };
+
 	glAttachShader(shaderProgram, vs);
 	glAttachShader(shaderProgram, fs);
 
 	glDeleteShader(vs);
 	glDeleteShader(fs);
+
 	glLinkProgram(shaderProgram);
 	return shaderProgram;
 }
 
-unsigned int Shader::compileShader(unsigned int type, const std::string& source)
+unsigned Shader::compileShader(const std::string& source, unsigned type)
 {
-	unsigned int shaderID{ glCreateShader(type) };
-	const char* src{ source.c_str() }; // c_str() to convert std::string into C-Style pointer string;
-	glShaderSource(shaderID, 1, &src, nullptr);
-	glCompileShader(shaderID);
-	checkCompileErros(shaderID, type);
+	unsigned shaderProgram{ glCreateShader(type) };
+	const char* src{ source.c_str() }; //c_str to convert std::string into C_Style pointer char;
 
+	glShaderSource(shaderProgram, 1, &src, nullptr);
+	glCompileShader(shaderProgram);
 
-	return shaderID;
+	checkCompileError(shaderProgram, type);
+
+	return shaderProgram;
 }
 
-//function from learnopenGL.com
-void Shader::checkCompileErros(unsigned int shader, unsigned int type)
+
+void Shader::checkCompileError(unsigned  shader, unsigned  type) const
 {
 	int success;
 	char infoLog[1024];
-
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
 		glGetShaderInfoLog(shader, 1024, NULL, infoLog);
 		std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 	}
-
 }
 
+
+unsigned Shader::getUniformLocation(const std::string& name)
+{
+	int location{ glGetUniformLocation(ID, name.c_str()) };
+	if (location == -1) 
+		std::cout << "WARNING: uniform " << name << " not found!\n";
+	
+	return location;
+}
+
+
 Shader::Shader(const std::string& vertexCode, const std::string& fragmentCode) :
-	shaderProgram{ makeShader(vertexCode, fragmentCode) }
+	ID{ makeShader(vertexCode,fragmentCode) }
 {
 
 }
 
 Shader::~Shader()
 {
-
+	glDeleteProgram(ID);
 }
 
-unsigned int Shader::getShader() const
+void Shader::use() const
 {
-	return shaderProgram;
+	glUseProgram(ID);
 }
 
+void Shader::unBind() const
+{
+	glUseProgram(0);
+}
+
+unsigned Shader::getID() const
+{
+	return ID;
+}
+
+void Shader::setUniform1i(const std::string& uniformName, int value)
+{
+	unsigned location{ getUniformLocation(uniformName) };
+	glUniform1f(location, value);
+}
+
+void Shader::setUniform1f(const std::string& uniformName, float value)
+{
+	unsigned location{ getUniformLocation(uniformName) };
+	glUniform1f(location, value);
+}
+
+void Shader::setUniform2f(const std::string& uniformName, std::array<float, 2> values)
+{
+	unsigned location{ getUniformLocation(uniformName) };
+	glUniform2f(location, values.at(0), values.at(1));
+}
+
+void Shader::setUniform3f(const std::string& uniformName, std::array<float, 3> values)
+{
+	unsigned location{ getUniformLocation(uniformName) };
+	glUniform3f(location, values.at(0), values.at(1), values.at(2));
+}
+
+void Shader::setUniform4f(const std::string& uniformName, std::array<float, 4> values)
+{
+	unsigned location{ getUniformLocation(uniformName) };
+	glUniform4f(location, values.at(0), values.at(1), values.at(2), values.at(3));
+}

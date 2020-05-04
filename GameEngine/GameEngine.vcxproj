@@ -87,18 +87,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dependecies\includes\stb_image.h" />
+    <ClInclude Include="src\Common\Shader.h" />
     <ClInclude Include="src\Common\Component.h" />
     <ClInclude Include="Dependecies\includes\glad\glad.h" />
     <ClInclude Include="Dependecies\includes\GLFW\glfw3.h" />
     <ClInclude Include="Dependecies\includes\GLFW\glfw3native.h" />
     <ClInclude Include="Dependecies\includes\KHR\khrplatform.h" />
+    <ClInclude Include="src\Common\IndexBuffer.h" />
     <ClInclude Include="src\Common\Scene.h" />
     <ClInclude Include="src\Common\GameObject.h" />
-    <ClInclude Include="src\Common\Shader.h" />
     <ClInclude Include="src\Common\Renderer.h" />
-    <ClInclude Include="src\Common\Game.h" />
-    <ClInclude Include="src\Common\Texture.h" />
-    <ClInclude Include="src\Common\Transform.h" />
+    <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\Common\VertexBuffer.h" />
+    <ClInclude Include="src\Common\VertexArray.h" />
+    <ClInclude Include="src\Common\VertexBufferLayout.h" />
+    <ClInclude Include="src\Common\texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\shader.fs" />
@@ -107,19 +110,25 @@
     <None Include="resources\shaders\shader2.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Common\Shader.cpp" />
     <ClCompile Include="src\Common\Component.cpp" />
+    <ClCompile Include="src\Common\IndexBuffer.cpp" />
     <ClCompile Include="src\Common\Scene.cpp" />
     <ClCompile Include="src\Common\GameObject.cpp" />
-    <ClCompile Include="src\Common\Shader.cpp" />
     <ClCompile Include="src\Common\Renderer.cpp" />
-    <ClCompile Include="src\Common\Game.cpp" />
+    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\Main.cpp" />
-    <ClCompile Include="src\Common\Texture.cpp" />
-    <ClCompile Include="src\Common\Transform.cpp" />
+    <ClCompile Include="src\Common\VertexBuffer.cpp" />
+    <ClCompile Include="src\Common\VertexArray.cpp" />
+    <ClCompile Include="src\Common\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Dependecies\libs\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\textures\charly.png" />
+    <Image Include="resources\textures\pablo.jpeg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "Scene.h"
+#include "Common/Scene.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
