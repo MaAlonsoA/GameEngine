@@ -33,10 +33,9 @@ private:
 	std::shared_ptr<Shader> loadShader(const std::string& vertexPath, const std::string& fragmentPath);
 	//Texture
 	std::shared_ptr<Texture> texture;
-	std::shared_ptr<Texture> loadTexture(const std::string texturePath, bool alpha);
+	std::shared_ptr<Texture> loadTexture(const std::string texturePath);
 	//Uniforms
-	bool enableUniforms;
-	std::vector<float> uniformData;
+	bool uniformsEnable;
 	std::string uniformName;
 	
 public:
@@ -46,18 +45,18 @@ public:
 				const std::vector<float>& vertices,
 				unsigned vertexSize,
 				std::vector<unsigned> indices
-	);
+			);
 	//With texture Constructor
-	Renderer(const std::string& vertexPath,
-		const std::string& fragmentPath,
-		const std::vector<float>& vertices,
-		unsigned vertexSize,
-		std::vector<unsigned> indices,
-		const std::string& texturePath,
-		bool alpha
-	);
+	Renderer(	const std::string& vertexPath,
+				const std::string& fragmentPath,
+				const std::vector<float>& vertices,
+				unsigned vertexSize,
+				std::vector<unsigned> indices,
+				const std::string& texturePath
+			);
 	~Renderer();
 	void update() const;
-	void setUniform(bool enable, const std::vector<float>& data, const std::string& name);
+	void enableUniform(bool enable);
+	std::shared_ptr<Shader> getShader() const;
 };
 

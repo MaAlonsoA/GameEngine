@@ -6,12 +6,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+
 #include "Common/Scene.h"
 #include "Common/GameObject.h"
 #include "Common/Component.h"
 #include "Common/Renderer.h"
+#include "Common//Transform.h"
 #include "Game.h"
-
 
 
 
@@ -20,13 +21,14 @@ void framebufferSizeCallback(GLFWwindow* window, int SCR_WIDTH, int SCR_HEIGHT);
 void loadAssets();
 void processImput(GLFWwindow* window);
 void gameLoop(GLFWwindow* window);
+const unsigned scr_width{ 1280 };
+const unsigned scr_height{ 720  };
 
 
 int main() {
-	const unsigned width{ 800 };
-	const unsigned height{ 800 };
+	
 
-	GLFWwindow* window{ initWindow(width, height) };
+	GLFWwindow* window{ initWindow(scr_width, scr_height) };
 	
 	loadAssets();
 	gameLoop(window);
@@ -39,7 +41,7 @@ int main() {
 GLFWwindow* initWindow(unsigned SCR_WIDTH, unsigned SCR_HEIGHT)
 {
 	GLFWwindow* window;
-	void framebufferSizeCallback(GLFWwindow * window, int width, int height);
+	void framebufferSizeCallback(GLFWwindow * window, int SCR_WIDTH, int SCR_HEIGHT);
 
 
 	glfwInit();
@@ -81,22 +83,45 @@ void gameLoop(GLFWwindow* window)
 {
 	Game prueba;
 	std::vector <float> positions{
-		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
-		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
+		 0.2f,  0.2f, 0.0f, 1.0f, 1.0f,
+		 0.2f, -0.2f, 0.0f, 1.0f, 0.0f,
+		-0.2f, -0.2f, 0.0f, 0.0f, 0.0f,
+		-0.2f,  0.2f, 0.0f, 0.0f, 1.0f
 	};
 	std::vector <unsigned> indices{
 		0, 1, 3,
 		1, 2, 3
 	};
+
 	auto sandbox{ std::make_shared<Scene>() };
+
 	auto prueba1{ std::make_shared<GameObject>() };
-	auto render1{ std::make_shared<Renderer>(	"resources/shaders/shader2.vs", "resources/shaders/shader2.fs", positions, 5, indices,
-												"resources/textures/charly.png", true
-												) };
-	prueba1->pushComponent(render1);
+	auto render1{ std::make_shared<Renderer>("resources/shaders/shader.vs", "resources/shaders/shader.fs", positions, 5, indices,
+											"resources/textures/charly.png"
+											) };
+
+	auto transform1{ std::make_shared<Transform>() };
+	prueba1->pushComponent(ComponentType::RENDERER, render1);
+	prueba1->pushComponent(ComponentType::TRANSFORM, transform1);
+	transform1->foo();
+	glm::mat4 projection = glm::ortho(0.0f, 8.0f, 4.5f, 0.0f, -1.0f, 1.0f);
+/*
+	if (uniformsEnable) {
+
+		shader->setUniformMatrix4("projection", projection);
+	}*/
+	
+
+	auto prueba2{ std::make_shared<GameObject>() };
+
+ 	auto render2{ std::make_shared<Renderer>(	"resources/shaders/shader2.vs", "resources/shaders/shader2.fs", positions, 5, indices,
+												"resources/textures/pablo.png"
+											) };
+
+	prueba2->pushComponent(ComponentType::RENDERER, render2);
+	
 	sandbox->pushGameObject(prueba1);
+	sandbox->pushGameObject(prueba2);
 
 	while (!glfwWindowShouldClose(window)) {
 
@@ -105,12 +130,9 @@ void gameLoop(GLFWwindow* window)
 		//render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-		
-		
+
 		sandbox->update();
-
-		
-
+		transform1->localShader->setUniformMatrix4("projection", projection);
 		//glfw: swap buffer and poll IO event
 		glfwSwapBuffers(window);
 		glfwPollEvents();

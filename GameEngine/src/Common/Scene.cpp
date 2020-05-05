@@ -13,7 +13,7 @@ Scene::~Scene()
 void Scene::update()
 {
 
-	for (auto& elem : entities)
+	for (const auto& elem : entities)
 		elem->update();
 	
 }

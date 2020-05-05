@@ -17,11 +17,14 @@ void GameObject::pushChild(std::shared_ptr<GameObject> child)
 	children.push_back(child);
 }
 
-void GameObject::pushComponent(std::shared_ptr<Component> component)
+
+
+void GameObject::pushComponent(const ComponentType& type, std::shared_ptr<Component> elem)
 {
-	component->setFather(shared_from_this());
-	components.push_back(component);
+	elem->setFather(shared_from_this());
+	components.insert( std::pair<ComponentType, std::shared_ptr<Component>>(type, elem) );
 }
+
 
 void GameObject::setFather(std::weak_ptr<GameObject> father)
 {
@@ -32,10 +35,15 @@ void GameObject::update()
 {
 
 	for (auto& elem : components) {
-		elem->update();
+		elem.second->update();
 	}
 		
 	
 	for (auto& elem : children)
 		elem->update();
+}
+
+std::map<ComponentType,std::shared_ptr<Component>> GameObject::getComponents() const
+{
+	return components;
 }
