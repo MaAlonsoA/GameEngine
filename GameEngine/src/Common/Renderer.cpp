@@ -37,9 +37,9 @@ std::shared_ptr<Texture> Renderer::loadTexture(const std::string texturePath)
 	int height{ 512 };
 	int nrChanel;
 	const char* src{ texturePath.c_str() };
-	/*stbi_set_flip_vertically_on_load(1);*/
+	stbi_set_flip_vertically_on_load(1);
 	unsigned char* textureData{ stbi_load(src, &width, &height, &nrChanel, 0) };
-
+	
 	auto texture{std::make_shared<Texture> (textureData, width, height) };
 	stbi_image_free(textureData);
 

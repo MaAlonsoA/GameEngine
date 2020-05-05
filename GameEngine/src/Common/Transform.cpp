@@ -10,14 +10,33 @@ Transform::~Transform()
 	localFather.reset();
 }
 
-void Transform::foo()
+void Transform::init()
 {
 	localFather = father.lock();
-	localShader = std::static_pointer_cast<Renderer>(localFather->getComponents().find(ComponentType::RENDERER)->second)->getShader();
+	lRenderer = std::static_pointer_cast<Renderer>(localFather->getComponents().find(ComponentType::RENDERER)->second);
 }
 
 void Transform::update() const
 {
+	glm::mat4 projection = glm::ortho(0.0f, 4.0f, 3.0f, 0.0f, -1.0f, 1.0f);
+	lRenderer->getShader()->setUniformMatrix4("u_proj", projection);
+	lRenderer->update();
+}
 
+void Transform::update( const glm::vec2& position, const glm::vec2& size, float rotate) const
+{
+	lRenderer->getShader()->use();
+	glm::mat4 projection = glm::ortho(-800.0f, 800.0f, -600.0f, 600.0f, -1.0f, 1.0f);
+	std::string name2{ "u_model" };
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::translate(model, glm::vec3(position, 0.0f));
+
+	model = glm::translate(model, glm::vec3(0.5f * size.x, 0.5f * size.y, 0.0f));
+	model = glm::rotate(model, glm::radians(rotate), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::translate(model, glm::vec3(-0.5f * size.x, -0.5f * size.y, 0.0f));
+	model = glm::scale(model, glm::vec3(size, 1.0f));
+	lRenderer->getShader()->setUniformMatrix4("u_proj", projection);
+	lRenderer->getShader()->setUniformMatrix4(name2, model);
+	lRenderer->update();
 }
 

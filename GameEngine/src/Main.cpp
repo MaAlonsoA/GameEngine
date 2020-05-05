@@ -5,6 +5,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 #include "Common/Scene.h"
@@ -21,8 +23,8 @@ void framebufferSizeCallback(GLFWwindow* window, int SCR_WIDTH, int SCR_HEIGHT);
 void loadAssets();
 void processImput(GLFWwindow* window);
 void gameLoop(GLFWwindow* window);
-const unsigned scr_width{ 1280 };
-const unsigned scr_height{ 720  };
+const unsigned scr_width{ 800 };
+const unsigned scr_height{ 600  };
 
 
 int main() {
@@ -83,10 +85,10 @@ void gameLoop(GLFWwindow* window)
 {
 	Game prueba;
 	std::vector <float> positions{
-		 0.2f,  0.2f, 0.0f, 1.0f, 1.0f,
-		 0.2f, -0.2f, 0.0f, 1.0f, 0.0f,
-		-0.2f, -0.2f, 0.0f, 0.0f, 0.0f,
-		-0.2f,  0.2f, 0.0f, 0.0f, 1.0f
+		 0.5f,  0.5f, 0.0f, 1.0f, 1.0f,
+		 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f, 0.0f, 1.0f
 	};
 	std::vector <unsigned> indices{
 		0, 1, 3,
@@ -103,36 +105,45 @@ void gameLoop(GLFWwindow* window)
 	auto transform1{ std::make_shared<Transform>() };
 	prueba1->pushComponent(ComponentType::RENDERER, render1);
 	prueba1->pushComponent(ComponentType::TRANSFORM, transform1);
-	transform1->foo();
-	glm::mat4 projection = glm::ortho(0.0f, 8.0f, 4.5f, 0.0f, -1.0f, 1.0f);
-/*
-	if (uniformsEnable) {
-
-		shader->setUniformMatrix4("projection", projection);
-	}*/
+	transform1->init();
 	
 
 	auto prueba2{ std::make_shared<GameObject>() };
-
  	auto render2{ std::make_shared<Renderer>(	"resources/shaders/shader2.vs", "resources/shaders/shader2.fs", positions, 5, indices,
 												"resources/textures/pablo.png"
 											) };
 
+	auto transform2{ std::make_shared<Transform>() };
 	prueba2->pushComponent(ComponentType::RENDERER, render2);
-	
+	prueba2->pushComponent(ComponentType::TRANSFORM, transform2);
+	transform2->init();
+
 	sandbox->pushGameObject(prueba1);
 	sandbox->pushGameObject(prueba2);
+
+	float f{ 0 };
+	float increment{ 0.05 };
+	float f2{ 0 };
+	float increment2{ -0.05 };
 
 	while (!glfwWindowShouldClose(window)) {
 
 		processImput(window);
 		
+		if (f > 15) increment = -0.5;
+		else if (f < 0) increment = 0.5;
+		f += increment;
+		if (f2 < -15) increment2 = 0.5;
+		else if (f2 > 0) increment2 = -0.5;
+		f2 += increment2;
 		//render
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+		transform2->update(glm::vec2(-200.0f, 0.0f), glm::vec2(512.0f, 512.0f), f2);
+		transform1->update(glm::vec2(300.0f, 0.0f), glm::vec2(512.0f, 512.0f), f);
+		
 
-		sandbox->update();
-		transform1->localShader->setUniformMatrix4("projection", projection);
+		//sandbox->update();
 		//glfw: swap buffer and poll IO event
 		glfwSwapBuffers(window);
 		glfwPollEvents();

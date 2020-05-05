@@ -10,6 +10,7 @@
 enum class ComponentType : unsigned char {
 	RENDERER,
 	TRANSFORM,
+	BEHAVIOR
 };
 class Component;
 class GameObject : public std::enable_shared_from_this<GameObject> 

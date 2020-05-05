@@ -33,12 +33,9 @@ void GameObject::setFather(std::weak_ptr<GameObject> father)
 
 void GameObject::update()
 {
-
-	for (auto& elem : components) {
-		elem.second->update();
-	}
-		
-	
+	//components.find(ComponentType::BEHAVIOR)->second->update();
+	components.find(ComponentType::TRANSFORM)->second->update();
+	//components.find(ComponentType::RENDERER)->second->update();
 	for (auto& elem : children)
 		elem->update();
 }
