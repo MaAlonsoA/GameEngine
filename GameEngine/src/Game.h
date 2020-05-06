@@ -10,7 +10,7 @@
 #include <GLFW/glfw3.h>
 
 
-enum class GameState : unsigned char {
+enum class GameStatus : unsigned char {
 	GAME_ACTIVE,
 	GAME_MENU,
 	GAME_WIN,
@@ -20,7 +20,7 @@ enum class GameState : unsigned char {
 class Game
 {
 private:
-	GameState state;
+	GameStatus status;
 	std::vector<std::shared_ptr<Scene>> scenes;
 	
 public:

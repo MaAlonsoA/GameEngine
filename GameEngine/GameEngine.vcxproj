@@ -86,6 +86,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="dependecies\includes\stb_image.h" />
+    <ClInclude Include="src\SolidBrick.h" />
+    <ClInclude Include="src\Level.h" />
     <ClInclude Include="src\Common\Shader.h" />
     <ClInclude Include="src\Common\Component.h" />
     <ClInclude Include="Dependecies\includes\glad\glad.h" />
@@ -110,6 +112,8 @@
     <None Include="resources\shaders\shader2.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\SolidBrick.cpp" />
+    <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Common\Shader.cpp" />
     <ClCompile Include="src\Common\Component.cpp" />
     <ClCompile Include="src\Common\IndexBuffer.cpp" />

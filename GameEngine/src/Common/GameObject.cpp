@@ -31,13 +31,9 @@ void GameObject::setFather(std::weak_ptr<GameObject> father)
 	father = father;
 }
 
-void GameObject::update()
+void GameObject::update() const
 {
-	//components.find(ComponentType::BEHAVIOR)->second->update();
-	components.find(ComponentType::TRANSFORM)->second->update();
-	//components.find(ComponentType::RENDERER)->second->update();
-	for (auto& elem : children)
-		elem->update();
+
 }
 
 std::map<ComponentType,std::shared_ptr<Component>> GameObject::getComponents() const
