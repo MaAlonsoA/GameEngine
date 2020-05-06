@@ -4,8 +4,8 @@ unsigned Texture::makeTexture(unsigned char* data, unsigned width, unsigned heig
 {
 	unsigned textureID;
 	glGenTextures(1, &textureID);
-	
 	glBindTexture(GL_TEXTURE_2D, textureID);
+
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -38,7 +38,7 @@ unsigned Texture::getID()
 void Texture::bind() const
 {
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, 1);
+	glBindTexture(GL_TEXTURE_2D, ID);
 }
 
 void Texture::unBind()
