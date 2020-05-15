@@ -7,10 +7,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class SolidBrick : public GameObject
+class Brick : public GameObject
 {
 private:
-
+	
 	std::vector <float> vertices{
 	 0.0f,  0.0f, 0.0f,	 0.0f,  1.0f,
 	 0.0f, -1.0f, 0.0f,  0.0f,  0.0f,
@@ -26,11 +26,14 @@ private:
 
 
 public:
-	SolidBrick(const glm::vec2& pos, const glm::vec2& size);
-	~SolidBrick();
-	void update() ;
-	inline bool isSolid() { return true; };
+	Brick(const glm::vec2& pos, const glm::vec2& size, int value);
+	~Brick();
+	void update();
+	inline bool isSolid() { return false; };
 	glm::vec2 getPosition() const;
 	glm::vec2 getSize() const;
 };
+
+
+
 

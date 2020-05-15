@@ -27,7 +27,7 @@ void Transform::update() const
 void Transform::update( const glm::vec2& position, const glm::vec2& size, float rotate) const
 {
 	lRenderer->getShader()->use();
-	glm::mat4 projection = glm::ortho(-1280.0f, 1280.0f, -1024.0f, 1024.0f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
 	std::string name2{ "u_model" };
 	glm::mat4 model = glm::mat4(1.0f);
 	model = glm::translate(model, glm::vec3(position, 0.0f));

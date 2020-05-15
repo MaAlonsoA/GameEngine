@@ -37,7 +37,11 @@ void Scene::loadFromFile(const std::string& levelPath)
 			levelData.push_back(row);
 		}
 	}
-	initScene( levelData);
+	initScene(levelData);
 }
 
+std::vector < std::shared_ptr<GameObject> > Scene::getEntities()
+{
+	return entities;
+}
 

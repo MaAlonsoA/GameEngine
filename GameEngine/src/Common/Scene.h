@@ -19,5 +19,6 @@ public:
 	void pushGameObject(std::shared_ptr<GameObject > gameObject);
 	void loadFromFile(const std::string& levelPath);
 	virtual void initScene(const std::vector<std::vector<unsigned>> & leveData) = 0;
+	std::vector < std::shared_ptr<GameObject> > getEntities();
 };
 

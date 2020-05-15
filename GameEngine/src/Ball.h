@@ -7,15 +7,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class SolidBrick : public GameObject
+class Ball : public GameObject
 {
 private:
-
 	std::vector <float> vertices{
-	 0.0f,  0.0f, 0.0f,	 0.0f,  1.0f,
-	 0.0f, -1.0f, 0.0f,  0.0f,  0.0f,
-	 1.0f,  0.0f, 0.0f,  1.0f,  1.0f,
-	 1.0f, -1.0f, 0.0f,  1.0f,  0.0f
+	0.0f,  0.0f, 0.0f,	0.0f,  1.0f,
+	0.0f, -1.0f, 0.0f,  0.0f,  0.0f,
+	1.0f,  0.0f, 0.0f,  1.0f,  1.0f,
+	1.0f, -1.0f, 0.0f,  1.0f,  0.0f
 	};
 	std::vector <unsigned> indices{
 		0, 1, 2,
@@ -23,14 +22,20 @@ private:
 	};
 	glm::vec2 position;
 	glm::vec2 size;
-
+	glm::vec2 velocity;
 
 public:
-	SolidBrick(const glm::vec2& pos, const glm::vec2& size);
-	~SolidBrick();
-	void update() ;
-	inline bool isSolid() { return true; };
+	Ball();
+	~Ball();
 	glm::vec2 getPosition() const;
+	void setPosition(glm::vec2 val);
+	
 	glm::vec2 getSize() const;
+
+	void setVelocity(float x, float y);
+	glm::vec2 getVelocity();
+	void update();
+	inline bool isSolid() { return true; };
+
 };
 

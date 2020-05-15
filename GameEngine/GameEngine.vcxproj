@@ -85,6 +85,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Ball.h" />
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Brick.h" />
     <ClInclude Include="dependecies\includes\stb_image.h" />
     <ClInclude Include="src\SolidBrick.h" />
     <ClInclude Include="src\Level.h" />
@@ -112,6 +115,9 @@
     <None Include="resources\shaders\shader2.vs" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Ball.cpp" />
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Brick.cpp" />
     <ClCompile Include="src\SolidBrick.cpp" />
     <ClCompile Include="src\Level.cpp" />
     <ClCompile Include="src\Common\Shader.cpp" />

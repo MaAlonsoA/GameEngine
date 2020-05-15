@@ -2,6 +2,9 @@
 
 #include "Common/Scene.h"
 #include "SolidBrick.h"
+#include "Brick.h"
+#include "Player.h"
+#include "Ball.h"
 
 class Level : public Scene
 {
