@@ -27,24 +27,9 @@ private:
 public:
 	VertexBufferLayout() : stride(0) {};
 
-	template<typename T>
-	void push(unsigned amount) {
-		static_assert(false);
-	}
-	template <>
-	void push<float>(unsigned amount) {
-		elements.push_back({ GL_FLOAT, amount, GL_FALSE });
+	void push(float amount) {
+		elements.push_back({ GL_FLOAT, static_cast<unsigned>(amount), GL_FALSE });
 		stride += amount * VertexBufferElements::GetSizeOfType(GL_FLOAT);
-	}
-	template <>
-	void push<unsigned>(unsigned amount) {
-		elements.push_back({ GL_UNSIGNED_INT, amount, GL_FALSE });
-		stride += amount * VertexBufferElements::GetSizeOfType(GL_UNSIGNED_INT);
-	}
-	template <>
-	void push<unsigned char>(unsigned amount) {
-		elements.push_back({ GL_UNSIGNED_BYTE, amount, GL_TRUE });
-		stride += amount * VertexBufferElements::GetSizeOfType(GL_UNSIGNED_BYTE);
 	}
 
 	inline const std::vector<VertexBufferElements> &getElements()const { return elements; };

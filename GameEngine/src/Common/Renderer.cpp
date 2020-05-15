@@ -57,7 +57,7 @@ Renderer::Renderer(const std::string& vertexPath, const std::string& fragmentPat
 	uniformsEnable { true }
 {
 	VertexBufferLayout layout;
-	layout.push<float>(vertexSize);
+	layout.push(vertexSize);
 	VAO.addBuffer(VBO, layout);
 }
 
@@ -72,8 +72,8 @@ Renderer::Renderer(const std::string& vertexPath, const std::string& fragmentPat
 	texture {loadTexture(texturePath)}
 {
 	VertexBufferLayout layout;
-	layout.push<float>(vertexSize - 2.0f);
-	layout.push<float>(2);
+	layout.push(vertexSize - 2.0f);
+	layout.push(2);
 	VAO.addBuffer(VBO, layout);
 }
 
