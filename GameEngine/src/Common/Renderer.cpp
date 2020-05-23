@@ -31,7 +31,7 @@ std::shared_ptr<Shader> Renderer::loadShader(const std::string& vertexPath, cons
 	return shader;
 }
 
-std::shared_ptr<Texture> Renderer::loadTexture(const std::string texturePath)
+std::shared_ptr<Texture> Renderer::loadTexture(const std::string& texturePath)
 {
 	int width{ 512 };
 	int height{ 512 };

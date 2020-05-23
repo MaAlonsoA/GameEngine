@@ -33,7 +33,7 @@ private:
 	std::shared_ptr<Shader> loadShader(const std::string& vertexPath, const std::string& fragmentPath);
 	//Texture
 	std::shared_ptr<Texture> texture;
-	std::shared_ptr<Texture> loadTexture(const std::string texturePath);
+	std::shared_ptr<Texture> loadTexture(const std::string& texturePath);
 	//Uniforms
 	bool uniformsEnable;
 	std::string uniformName;
